@@ -21,13 +21,18 @@ type ErrorDetail struct {
 	Timestamp string                 `json:"timestamp"`
 }
 
-// respondWithError sends a structured error response
-func respondWithError(w http.ResponseWriter, statusCode int, message string) {
-	respondWithErrorDetails(w, statusCode, message, nil)
+// RespondWithError sends a structured error response
+func RespondWithError(w http.ResponseWriter, statusCode int, message string) {
+	RespondWithErrorDetails(w, statusCode, message, nil)
 }
 
-// respondWithErrorDetails sends a structured error response with additional details
-func respondWithErrorDetails(w http.ResponseWriter, statusCode int, message string, details map[string]interface{}) {
+// respondWithError is an alias for backward compatibility
+func respondWithError(w http.ResponseWriter, statusCode int, message string) {
+	RespondWithError(w, statusCode, message)
+}
+
+// RespondWithErrorDetails sends a structured error response with additional details
+func RespondWithErrorDetails(w http.ResponseWriter, statusCode int, message string, details map[string]interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 
@@ -48,7 +53,7 @@ func RespondWithValidationErrors(w http.ResponseWriter, errors []ValidationError
 	details := make(map[string]interface{})
 	details["validation_errors"] = errors
 
-	respondWithErrorDetails(w, http.StatusBadRequest, "validation failed", details)
+	RespondWithErrorDetails(w, http.StatusBadRequest, "validation failed", details)
 }
 
 // ErrorHandlingMiddleware catches panics and converts them to 500 errors

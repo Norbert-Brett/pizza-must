@@ -40,7 +40,7 @@ func TestProperty_ErrorsHaveConsistentStructure(t *testing.T) {
 			}
 
 			w := httptest.NewRecorder()
-			respondWithError(w, statusCode, message)
+			RespondWithError(w, statusCode, message)
 
 			// Check status code
 			if w.Code != statusCode {
@@ -108,7 +108,7 @@ func TestProperty_ErrorStatusCodesAreCorrect(t *testing.T) {
 			statusCode := standardCodes[useCode%len(standardCodes)]
 
 			w := httptest.NewRecorder()
-			respondWithError(w, statusCode, "test error")
+			RespondWithError(w, statusCode, "test error")
 
 			// Status code should match what was requested
 			return w.Code == statusCode
@@ -140,7 +140,7 @@ func TestProperty_ErrorDetailsAreIncluded(t *testing.T) {
 			}
 
 			w := httptest.NewRecorder()
-			respondWithErrorDetails(w, http.StatusBadRequest, message, details)
+			RespondWithErrorDetails(w, http.StatusBadRequest, message, details)
 
 			// Parse response
 			var response ErrorResponse

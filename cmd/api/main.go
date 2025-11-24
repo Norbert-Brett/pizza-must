@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"pizza-must/internal/config"
+	"pizza-must/internal/database"
 	"pizza-must/internal/logger"
 	"pizza-must/internal/server"
 
@@ -62,8 +63,22 @@ func main() {
 		zap.String("port", cfg.Server.Port),
 	)
 
+	// Initialize database
+	dbService := database.New()
+	db := dbService.DB()
+
+	// Check database health
+	health := dbService.Health()
+	log.Info("Database health check", zap.Any("health", health))
+
+	// Run migrations
+	if err := database.RunMigrations(db, "migrations", log); err != nil {
+		log.Fatal("Failed to run migrations", zap.Error(err))
+	}
+	log.Info("Database migrations completed successfully")
+
 	// Create server
-	srv := server.NewServer(cfg, log)
+	srv := server.NewServer(cfg, log, db)
 
 	// Create a done channel to signal when the shutdown is complete
 	done := make(chan bool, 1)

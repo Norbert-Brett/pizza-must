@@ -77,9 +77,10 @@ func TestProperty_RateLimitingBlocksExcessiveRequests(t *testing.T) {
 
 				handler.ServeHTTP(w, req)
 
-				if w.Code == http.StatusOK {
+				switch w.Code {
+				case http.StatusOK:
 					successCount++
-				} else if w.Code == http.StatusTooManyRequests {
+				case http.StatusTooManyRequests:
 					blockedCount++
 				}
 			}
